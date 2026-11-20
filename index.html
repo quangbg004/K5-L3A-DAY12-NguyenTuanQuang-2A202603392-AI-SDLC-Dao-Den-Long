@@ -1,9 +1,8 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#191b37"><title>Đảo Đèn Lồng · Đảo Bến</title></head>
-<body><main id="world" aria-label="Đảo Bến 3D"></main>
-<header><span class="crest">✧</span><b>Đảo Đèn Lồng</b><button id="sound" aria-pressed="true">Âm thanh · Bật</button></header>
-<section id="panel"><div class="eyebrow">Đêm 01 &nbsp; / &nbsp; Đảo Bến</div><h1>Đảo Đèn<br><em>Lồng</em></h1><p id="story">Sương đen đã phủ kín Đảo Bến. Hãy dẫn Mây đi tìm đom đóm và thắp lại năm chiếc đèn trước bình minh.</p><button id="play">Bắt đầu đêm &nbsp; →</button></section>
-<section id="hud" hidden aria-label="Trạng thái"><div>Đèn lồng<b id="lamps"></b></div><div>Đom đóm<b id="bag"></b></div><div>Ngọn lửa<b id="life"></b></div><div>Còn lại<b id="time"></b></div><div>Điểm<b id="score"></b></div></section>
-<div id="prompt" role="status"></div>
-<footer><span><kbd>W A S D</kbd> Di chuyển</span><span><kbd>Space</kbd> Nhảy</span><span><kbd>E</kbd> Nạp đèn</span><span><kbd>Q</kbd> Tỏa sáng</span><span><kbd>← →</kbd> Xoay góc nhìn</span></footer>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0E1430"><title>Đảo Đèn Lồng · Ba hòn đảo</title></head>
+<body><main id="world" aria-label="Quần đảo Đèn Lồng 3D"></main>
+<header><span class="crest">✧</span><b>Đảo Đèn Lồng</b></header>
+<section id="panel"><div class="eyebrow" id="chapter"></div><h1 id="title"></h1><p id="story"></p><div id="options"></div><div id="actions"></div></section>
+<section id="hud" hidden aria-label="Trạng thái"><div class="life">Ngọn lửa <b id="life"></b></div><strong id="time"></strong><div class="points">Đèn <b id="lamps"></b>　Điểm <b id="score"></b></div><div class="inventory">Đom đóm <span id="bag"></span></div><div class="abilities"><span id="dash"></span><span id="pulse"></span><span id="charm"></span></div><div id="arrow" hidden>➤</div></section>
+<div id="prompt" role="status"></div><footer>WASD · Di chuyển　 Space · Nhảy　 Shift · Lướt　 E · Nạp đèn　 Q · Tỏa sáng　 P / Esc · Tạm dừng</footer>
 <script type="module" src="/src/client/main.ts"></script></body></html>

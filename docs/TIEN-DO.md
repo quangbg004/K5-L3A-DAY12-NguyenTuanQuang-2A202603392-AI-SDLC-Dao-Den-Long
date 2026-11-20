@@ -17,3 +17,4 @@
 | Phạm vi | Đã đọc Ticket-02 và kế hoạch; chuẩn hóa tuning v1.1 và giữ riêng bằng chứng Phase 1. |
 | Lõi mô phỏng | Đã biên dịch CLI v1.1 cho 3 Đêm, gồm bản đồ, pause, dash, bùa, gió, hồi sinh, Gió Lạc và điểm theo lượng nạp. Đang kiểm tra các mốc tick. |
 | Hồi quy và benchmark | 20/20 test đạt, gồm 8 scenario cũ theo luật mới và các phép thử CLI cho dash, pause, rơi, bùa, Gió Lạc, cầu, bục, dốc và gió. Benchmark đã chạy đủ 21.600 tick. |
+| Bản chơi 3D | Đã build giao diện ba đảo, chuỗi Đêm, tạm dừng, âm lượng/độ nhạy, âm thanh, vật liệu và HUD. Bước tiếp theo là kiểm chứng bằng trình duyệt. |

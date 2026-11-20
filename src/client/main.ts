@@ -1,70 +1,91 @@
 import {Game} from '../sim/engine.js'
+import {maps} from '../sim/maps.js'
+import type {Night} from '../sim/types.js'
 import contract from '../../game.contract.json'
 import {scene} from './scene.js'
-import {chime,toggle,unlock} from './audio.js'
+import {chime,music,unlock,volume} from './audio.js'
+import {el,hud,panel,preference,slider} from './ui.js'
 import './style.css'
-const el=(id:string)=>document.getElementById(id)!
-const view=scene(el('world'))
-let game=new Game(contract.tuning), started=false, yaw=0, accumulator=0, previous=performance.now(), messageUntil=0
-const held=new Set<string>(), taps=new Set<string>()
-const actions=['Space','KeyE','KeyQ','Mouse2']
-function clear(){held.clear();taps.clear()}
+
+const view=scene(el('world')),held=new Set<string>(),pressed=new Set<string>()
+let night:Night=1,game=new Game(contract.tuning),screen='menu',total=0,yaw=0,acc=0,previous=performance.now()
+let loud=preference('volume',50,0,100),sensitivity=preference('sensitivity',1,.2,2)
+volume(loud/100)
+const quotes=['Hãy theo những đốm sáng về bến. Năm ngọn đèn sẽ dẫn lối qua biển mây.','Cầu tre nối đôi bờ. Nếu nghe tiếng gió lùa qua cau, con nhớ giữ chặt túi đom đóm.','Trên tầng đá cao nhất có một tháp chuông. Khi ngọn đèn cuối sáng, bình minh sẽ trở về.']
+function clear(){held.clear();pressed.clear()}
+function overlay(next:string){
+  screen=next;clear();music(false);el('prompt').textContent='';el('hud').hidden=true
+  document.body.classList.remove('in-game');document.exitPointerLock?.()
+}
+function menu(){
+  overlay('menu');night=1;total=0;game=new Game(contract.tuning);view.reset()
+  panel('Ba hòn đảo','Đảo Đèn Lồng','Theo chân Mây qua ba đêm, nhặt đom đóm và thắp lại những ngọn đèn giữa biển mây.',[
+    ['Bắt đầu hành trình',()=>intro(1)],['Chọn Đêm',choose],['Cài đặt',settings]])
+}
+function choose(){
+  overlay('choose');panel('Hành trình','Chọn Đêm','',([1,2,3] as Night[]).map(n=>['Đêm '+n+' · '+maps[n].name,()=>intro(n)] as [string,()=>void]).concat([['Về menu',menu]]))
+}
+function intro(n:Night){
+  overlay('intro');night=n;game=new Game(contract.tuning,42,{},night);view.reset()
+  panel('Đêm 0'+night+' · Ông Đăng',maps[night].name,'“'+quotes[night-1]+'”',[['Vào Đêm '+night,start],['Về menu',menu]])
+}
+function play(){
+  clear();el('panel').hidden=true;el('hud').hidden=false;screen='playing';document.body.classList.add('in-game')
+  previous=performance.now();acc=0;unlock();music(true)
+}
+function start(){game=new Game(contract.tuning,42,{},night);yaw=0;view.reset();play()}
+function result(){
+  const won=game.state==='won'
+  overlay('result');chime(game.state)
+  if(won)total+=game.score
+  if(won&&night===3){panel('Hành trình hoàn tất','Bình Minh','Tổng điểm hành trình · '+total,[['Chơi lại từ đầu',menu]]);return}
+  panel('Đêm 0'+night+' · '+game.map.name,won?'Đảo đã sáng':'Đêm đã tàn','Điểm Đêm '+night+' · '+game.score,won?
+    [['Sang Đêm '+(night+1),()=>intro((night+1) as Night)],['Về menu',menu]]:[['Chơi lại Đêm',start],['Về menu',menu]])
+}
+function paused(){
+  overlay('paused');panel('Đêm 0'+night+' · '+game.map.name,'Tạm dừng','',[['Tiếp tục',resume],['Chơi lại Đêm',start],['Cài đặt',settings],['Về menu',menu]])
+}
+function resume(){game.step({pause:false});game.step({pause:true,move:[0,0],jump:false,dash:false,pulse:false,interact:false});play()}
+function settings(){
+  const back=screen==='paused'?paused:menu
+  overlay('settings');panel('Đảo Đèn Lồng','Cài đặt','',[['Quay lại',back]])
+  slider('volume','Âm lượng (%)',0,100,1,loud,v=>{loud=v;unlock();volume(v/100);chime('countdown')})
+  slider('sensitivity','Độ nhạy chuột',.2,2,.1,sensitivity,v=>sensitivity=v)
+}
 window.addEventListener('blur',clear)
-document.addEventListener('visibilitychange',()=>{previous=performance.now();accumulator=0;clear()})
+document.addEventListener('visibilitychange',()=>{clear();acc=0;previous=performance.now()})
 window.addEventListener('keydown',e=>{
-  if(!started||game.state!=='playing')return
-  if(['Space','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.code))e.preventDefault()
-  if(!e.repeat && actions.includes(e.code))taps.add(e.code)
+  if(screen==='paused'&&['Escape','KeyP'].includes(e.code)&&!e.repeat){resume();return}
+  if(screen!=='playing')return
+  if(['Space','ArrowLeft','ArrowRight','Escape'].includes(e.code))e.preventDefault()
+  if(!e.repeat)pressed.add(e.code)
   held.add(e.code)
 })
 window.addEventListener('keyup',e=>held.delete(e.code))
-el('world').addEventListener('contextmenu',e=>e.preventDefault())
-el('world').addEventListener('pointerdown',e=>{if(e.button===2){held.add('Mouse2');taps.add('Mouse2')}})
-window.addEventListener('pointerup',()=>held.delete('Mouse2'))
-el('sound').onclick=()=>{unlock();const on=toggle();el('sound').textContent='Âm thanh · '+(on?'Bật':'Tắt');el('sound').setAttribute('aria-pressed',String(on))}
-el('play').onclick=()=>{
-  unlock();clear();view.reset();game=new Game(contract.tuning);started=true;yaw=0;accumulator=0;previous=performance.now()
-  el('panel').hidden=true;el('hud').hidden=false;el('prompt').textContent='';messageUntil=0
-}
-function hud(){
-  const {t,player:p}=game
-  el('lamps').textContent=game.lanterns.filter(l=>l.lit).length+' / '+game.lanterns.length
-  el('bag').textContent=p.carried+' / '+t.carry_capacity
-  el('life').textContent='♥'.repeat(Math.max(0,p.flames)) || '0'
-  const seconds=Math.ceil(game.timeLeft)
-  el('time').textContent=Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0')
-  el('score').textContent=String(game.score)
-}
+el('world').oncontextmenu=e=>e.preventDefault()
+el('world').onpointerdown=e=>{if(screen==='playing'&&e.button===0)void el('world').requestPointerLock()?.catch(()=>{});if(e.button===2)pressed.add('KeyQ')}
+window.addEventListener('mousemove',e=>{if(screen==='playing'&&(document.pointerLockElement||e.buttons===1))yaw-=e.movementX*.003*sensitivity})
 function step(){
-  const down=(k:string)=>held.has(k)||taps.has(k)
+  const down=(k:string)=>held.has(k)||pressed.has(k)
   yaw+=(Number(down('ArrowLeft'))-Number(down('ArrowRight')))*1.8/60
-  game.step({move:[Number(down('KeyD'))-Number(down('KeyA')),Number(down('KeyS'))-Number(down('KeyW'))],cam_yaw_deg:yaw*180/Math.PI,
-    jump:down('Space'),interact:down('KeyE'),pulse:down('KeyQ')||down('Mouse2')})
-  taps.clear();view.events(game,game.events)
-  for(const e of game.events){
-    chime(e.name,game.player.carried)
-    const msg=({player_hit:'Bóng Mực chạm vào Mây · −1 lửa',lantern_lit:'Đèn lồng đã sáng',pulse:'Mây tỏa sáng'} as Record<string,string>)[e.name]
-    if(msg){el('prompt').textContent=msg;messageUntil=game.tick+70}
-  }
-  if(game.tick>=messageUntil){
-    const p=game.player.pos,l=game.lanterns.find(l=>!l.lit && Math.hypot(l.pos[0]-p[0],l.pos[2]-p[2])<=game.t.interact_radius)
-    el('prompt').textContent=l?'E · Nạp đèn '+l.id+' ('+l.deposited+'/'+game.t.lantern_cost+')':''
-  }
-  hud()
-  if(game.state!=='playing'){
-    const won=game.state==='won'
-    el('panel').querySelector('h1')!.textContent=won?'Đảo đã sáng':'Đêm đã tàn'
-    el('story').textContent=(won?'Mây đã thắp sáng cả năm đèn.':game.player.flames===0?'Ngọn lửa cuối cùng của Mây đã tắt.':'Bình minh đã đến trước khi cả đảo sáng đèn.')+' '+game.score+' điểm.'
-    el('play').textContent='Chơi lại  ↻';el('panel').hidden=false;el('prompt').textContent='';clear()
-  }
+  const oldTime=Math.ceil(game.timeLeft),warn=game.windWarning
+  game.step({move:[Number(down('KeyD'))-Number(down('KeyA')),Number(down('KeyS'))-Number(down('KeyW'))],cam_yaw_deg:yaw*180/Math.PI,jump:down('Space'),dash:down('ShiftLeft')||down('ShiftRight'),pulse:down('KeyQ'),interact:down('KeyE'),pause:down('KeyP')||down('Escape')})
+  pressed.clear();view.events(game,game.events)
+  for(const e of game.events)chime(e.name,game.player.carried)
+  if(game.jumped)chime('jump')
+  if(game.windWarning&&!warn)chime('wind')
+  if(Math.ceil(game.timeLeft)!==oldTime&&game.timeLeft<=10)chime('countdown')
+  if(game.state==='paused')paused()
+  if(game.state==='won'||game.state==='lost')result()
 }
 function animate(now:number){
-  const delta=Math.min((now-previous)/1000,.15);previous=now
-  if(started && game.state==='playing' && !document.hidden){
-    accumulator+=delta
-    while(accumulator>=1/60 && game.state==='playing'){step();accumulator-=1/60}
+  const dt=Math.min((now-previous)/1000,.2);previous=now
+  if(screen==='playing'&&!document.hidden){
+    acc+=dt
+    while(acc>=1/60&&screen==='playing'){acc-=1/60;step()}
   }
-  view.draw(game,yaw,!started,now/1000,delta)
+  view.draw(game,yaw,['menu','intro','choose'].includes(screen),now/1000,dt)
+  if(screen==='playing')hud(game,view.indicator(game))
   requestAnimationFrame(animate)
 }
-requestAnimationFrame(animate)
+menu();requestAnimationFrame(animate)
