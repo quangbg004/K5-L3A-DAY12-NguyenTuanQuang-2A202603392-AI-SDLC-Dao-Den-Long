@@ -40,3 +40,4 @@
 | CLI và giao diện | Đã chạy benchmark và soak chuẩn, bổ sung launcher, lưu điểm trên đĩa, đổi phím, phụ đề, giảm chuyển động và chữ lớn. |
 | Nghiệm thu | 37/37 test đạt; clone sạch khởi động thành công. Benchmark cuối đạt 984,32 FPS trên GTX 1050 Ti. Soak 0 crash, RSS tăng 13,6%. Đã kiểm tra điểm sau restart, phím đổi, cỡ chữ và phụ đề. |
 | Đóng gói | Đã chuẩn bị [hồ sơ nghiệm thu](proof/phase-4.md), [retro](notes/retro.md), video và workflow phát hành ZIP từ tag v1.0.0. |
+| Phát hành | Hai tag phase-4 và v1.0.0 trỏ tới 349caca. [Workflow Linux](https://github.com/quangbg004/K5-L3A-DAY12-NguyenTuanQuang-2A202603392-AI-SDLC-Dao-Den-Long/actions/runs/44748422408) đã thành công. [Release công khai](https://github.com/quangbg004/K5-L3A-DAY12-NguyenTuanQuang-2A202603392-AI-SDLC-Dao-Den-Long/releases/tag/v1.0.0) có ZIP, MP4, bench.json và soak.json. Đã tải ZIP từ GitHub, giải nén, chạy CLI headless và xuất bảng điểm thành công. |
