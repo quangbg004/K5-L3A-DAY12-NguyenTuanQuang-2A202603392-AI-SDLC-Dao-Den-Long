@@ -1,6 +1,6 @@
 ---
 name: verify-phase
-description: Verify Đảo Đèn Lồng v1.1 regression, three-night gameplay, CLI performance and browser evidence.
+description: Verify Đảo Đèn Lồng v1.2 headless regression, fuel rules, browser rendering, and performance.
 ---
 
-Run npm run verify:all after simulation changes. Use the scenario fixtures for v1.1 and compare repeated seeded output byte-for-byte. Verify that the Night 3 benchmark reaches tick 21600 within 30 seconds. For client changes follow docs/proof/phase-2.md, run the browser check at 1280×720 and record measured FPS and settings persistence. Keep Phase 1 evidence separate. Update docs/TIEN-DO.md at each milestone.
+Run npm run verify:all. tests/phase3.test.ts exercises the CLI at exact ticks. Run node tests/phase3-proof.mjs after build to capture browser evidence and measure FPS at 1280×720. Follow docs/proof/phase-3.md to reproduce headless evidence. Use matching Git tags to replay historical evidence. Update docs/TIEN-DO.md at each milestone.
