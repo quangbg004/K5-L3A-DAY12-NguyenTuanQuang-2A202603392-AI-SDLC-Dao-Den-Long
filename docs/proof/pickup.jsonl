@@ -1,0 +1,7 @@
+{"type":"snapshot","tick":0,"sim_tick":0,"state":"playing","time_left_s":180,"score":0,"player":{"pos":[0,0,0],"flames":3,"carried":0},"lanterns":[{"id":"L1","pos":[22,0,0],"lit":false,"deposited":0},{"id":"L2","pos":[6.798,0,20.923],"lit":false,"deposited":0},{"id":"L3","pos":[-17.798,0,12.931],"lit":false,"deposited":0},{"id":"L4","pos":[-17.798,0,-12.931],"lit":false,"deposited":0},{"id":"L5","pos":[6.798,0,-20.923],"lit":false,"deposited":0}],"shades":[],"motes_active":6,"motes":[{"id":"M1","pos":[1.8,0,0]},{"id":"M2","pos":[1.8,0,0]},{"id":"M3","pos":[1.8,0,0]},{"id":"M4","pos":[1.8,0,0]},{"id":"M5","pos":[1.8,0,0]},{"id":"M6","pos":[1.8,0,0]}]}
+{"type":"event","tick":1,"name":"mote_picked","data":{"carried":1}}
+{"type":"event","tick":1,"name":"mote_picked","data":{"carried":2}}
+{"type":"event","tick":1,"name":"mote_picked","data":{"carried":3}}
+{"type":"event","tick":1,"name":"mote_picked","data":{"carried":4}}
+{"type":"event","tick":1,"name":"mote_picked","data":{"carried":5}}
+{"type":"end","ticks":1,"state":"playing","score":50}

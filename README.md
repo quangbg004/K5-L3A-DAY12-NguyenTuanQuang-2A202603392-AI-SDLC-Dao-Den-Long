@@ -1,5 +1,33 @@
 # Day 12 — AI SDLC: Đảo Đèn Lồng
 
+## Chơi Đêm 1 – Đảo Bến
+
+Dẫn Mây nhặt đom đóm và thắp năm đèn lồng trước bình minh. Cần Node.js 20.17 trở lên và trình duyệt hỗ trợ WebGL 2. Chạy từ thư mục gốc rồi mở địa chỉ Vite in ra.
+
+```sh
+npm ci
+npm run build
+npm start
+```
+
+WASD để đi, Space để nhảy, ←/→ để xoay camera. Di chuyển đến gần đom đóm để tự nhặt. Nhấn E cạnh đèn để nạp, mỗi đèn cần 3 đốm và túi chứa 5 đốm. Q hoặc chuột phải tiêu 1 đốm để xua Bóng Mực. Đèn đã sáng bảo vệ Mây trong vòng 5 m. Mép đảo giữ Mây lại (`fall_enabled: false`). Hết 3 ngọn lửa hoặc hết 180 giây thì thua. Nút **Chơi lại** bắt đầu đêm mới.
+
+Mỗi đốm nhặt được cộng 10 điểm, mỗi đèn thắp cộng 100 và mỗi Bóng Mực bị xung làm choáng cộng 25. Khi thắng, mỗi giây nguyên còn lại cộng 2 điểm và mỗi ngọn lửa còn lại cộng 50.
+
+## Kiểm thử và headless
+
+Chạy `npm run verify:all` để build và kiểm tra. Sau khi build, có thể chạy một ván bằng CLI.
+
+```sh
+node dist-sim/headless.js --seed 42 --night 1 --scenario tests/scenarios/win.json --inputs tests/scenarios/win-inputs.json --ticks 10 --out win.jsonl
+```
+
+## Sáng tạo của tôi
+
+Mỗi đèn được thắp thả một chiếc đèn trời lên biển mây, làm sương thưa dần và tăng ánh sáng trên đảo. Chiếc đèn nhỏ ở nón Mây đung đưa khi di chuyển. Nhặt đom đóm, tỏa sáng và thắp đèn tạo tiếng chuông ngũ cung bằng Web Audio. Các hiệu ứng nằm ở lớp hiển thị. Hai lần chạy CLI cùng seed cho JSONL giống hệt từng byte. [Bằng chứng và ảnh chơi thử](docs/proof/phase-1.md)
+
+Theo dõi [tiến độ](docs/TIEN-DO.md), [giả định](docs/notes/phase-1-assumptions.md) và [nhật ký dùng AI](docs/notes/ai-log.md).
+
 > **Cá nhân** (1 người / 1 MSSV) · Áp dụng SDLC cùng AI để xây một **game 3D** qua **4 phase**, từ yêu cầu ban đầu tới bản phát hành.
 > **Lab board + trợ giảng:** **[Đảo Đèn Lồng Lab](https://claude.ai/artifact/Q1RYyv1dxjUczzCbd2ZnoW)**
 
