@@ -19,8 +19,10 @@ it('keeps the standard benchmark population, player and fuel throughout',()=>{
  expect(g.lanterns.map(l=>l.fuel60)).toEqual([6000,6000,6000,0,0])
 })
 it('completes ten seeded nights in one process within the RSS budget',()=>{
- const out=join(dir,'soak.json'),r=spawnSync(process.execPath,['dist-sim/soak.js','--seed','7','--nights','10','--out',out])
- expect(r.status).toBe(0)
+ const out=join(dir,'soak.json')
+ const [, ...soakArgs]=contract.soak_cmd.split(' ')
+ const result=spawnSync(process.execPath,[...soakArgs,'--seed','7','--nights','10','--out',out],{encoding:'utf8'})
+ expect(result.status,result.error?.message??result.stderr).toBe(0)
  const b=JSON.parse(readFileSync(out,'utf8'))
  expect(b.results).toHaveLength(10);expect(b.crashes).toBe(0)
  expect(b.mem_end_mb).toBeLessThanOrEqual(1.2*b.mem_start_mb)

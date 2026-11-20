@@ -43,11 +43,13 @@ Sau khi build, chạy các lệnh sau từ gốc repo.
 
 ```sh
 node dist-sim/bench.js --seed 42 --duration 30 --out bench.json
-node dist-sim/soak.js --seed 7 --nights 10 --out soak.json
+npm run soak -- --seed 7 --nights 10 --out soak.json
 node dist-sim/launcher.js --export-leaderboard out.json
 ```
 
-Benchmark mở Chromium ở 1280×720. Cài Chromium bằng `npx playwright install chromium` hoặc dùng Edge/Chrome đã cài (biến môi trường BROWSER_CHANNEL nhận msedge hoặc chrome). Chrome nhận cờ tắt giới hạn khung hình và VSync. Số đo phản ánh thời gian khung hình của ứng dụng trên GPU đang dùng. RSS toàn bộ trình duyệt đa tiến trình không có trong Web API nên peak_mem_mb là null. Soak dùng 10 Đêm liên tiếp, seed ban đầu + chỉ số Đêm tính từ 0.
+Benchmark mở Chromium ở 1280×720. Cài Chromium bằng `npx playwright install chromium` hoặc dùng Edge/Chrome đã cài (biến môi trường BROWSER_CHANNEL nhận msedge hoặc chrome). Chrome nhận cờ tắt giới hạn khung hình và VSync. Số đo phản ánh thời gian khung hình của ứng dụng trên GPU đang dùng. RSS toàn bộ trình duyệt đa tiến trình không có trong Web API nên peak_mem_mb là null.
+
+Soak chạy 10 Đêm liên tiếp trong một tiến trình, với seed bằng seed ban đầu cộng chỉ số Đêm tính từ 0. Lệnh soak chạy Node.js với `--jitless` để RSS trong lúc đo không chịu ảnh hưởng của mã do V8 biên dịch động.
 
 Trong Cài đặt có thể đổi 9 phím, bật chữ lớn và giảm chuyển động. Khi thua hoặc thắng Đêm cuối, nhập tên để lưu điểm của các Đêm đã thắng. Launcher lưu top 10 trong ~/.dao-den-long/leaderboard.json; DAO_DEN_LONG_DATA_DIR cho phép chọn thư mục khác. Bản lưu trữ web tĩnh dùng localStorage, lệnh export đọc dữ liệu của launcher.
 

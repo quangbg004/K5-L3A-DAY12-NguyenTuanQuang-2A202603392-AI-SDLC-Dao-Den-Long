@@ -41,3 +41,11 @@
 | Nghiệm thu | 37/37 test đạt; clone sạch khởi động thành công. Benchmark cuối đạt 984,32 FPS trên GTX 1050 Ti. Soak 0 crash, RSS tăng 13,6%. Đã kiểm tra điểm sau restart, phím đổi, cỡ chữ và phụ đề. |
 | Đóng gói | Đã chuẩn bị [hồ sơ nghiệm thu](proof/phase-4.md), [retro](notes/retro.md), video và workflow phát hành ZIP từ tag v1.0.0. |
 | Phát hành | Hai tag phase-4 và v1.0.0 trỏ tới 349caca. [Workflow Linux](https://github.com/quangbg004/K5-L3A-DAY12-NguyenTuanQuang-2A202603392-AI-SDLC-Dao-Den-Long/actions/runs/44748422408) đã thành công. [Release công khai](https://github.com/quangbg004/K5-L3A-DAY12-NguyenTuanQuang-2A202603392-AI-SDLC-Dao-Den-Long/releases/tag/v1.0.0) có ZIP, MP4, bench.json và soak.json. Đã tải ZIP từ GitHub, giải nén, chạy CLI headless và xuất bảng điểm thành công. |
+
+## Sửa lỗi CI sau Phase 4
+
+| Mốc | Kết quả |
+|---|---|
+| Tái lập | Một lượt CI trên commit `349caca` thất bại vì RSS cuối lượt soak là 56,64 MiB, vượt giới hạn 56,30 MiB. Trên Ubuntu WSL với Node.js 20.20.2, cả 8 lần chạy lệnh cũ đều vượt ngưỡng, tăng 22,41–29,50%. [Lượt CI lỗi](https://github.com/quangbg004/K5-L3A-DAY12-NguyenTuanQuang-2A202603392-AI-SDLC-Dao-Den-Long/actions/runs/44748419923) |
+| Sửa | Dùng `--jitless` riêng cho lệnh soak để giảm ảnh hưởng của mã do V8 biên dịch động lên RSS. Vitest gọi đúng lệnh trong contract v1.3. Vẫn đo RSS ở hai mốc cũ và giữ ngưỡng 20%. Nâng `checkout` và `setup-node` lên v5 để xử lý cảnh báo runtime của GitHub Actions. |
+| Kiểm chứng | Trên Ubuntu WSL, 8/8 lượt soak đạt, RSS tăng 7,21–7,84%. Trên Windows, `npm run verify:all` đạt 37/37 bài kiểm thử. |

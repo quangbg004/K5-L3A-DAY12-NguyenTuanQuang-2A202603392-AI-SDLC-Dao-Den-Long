@@ -11,7 +11,7 @@
     "test": "vitest run",
     "verify:all": "npm run build && npm test",
     "bench": "node dist-sim/bench.js",
-    "soak": "node dist-sim/soak.js"
+    "soak": "node --jitless --no-expose-wasm dist-sim/soak.js"
   },
   "dependencies": {
     "three": "0.170.0"

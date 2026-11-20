@@ -49,5 +49,5 @@
     "capacity_max": 20
   },
   "bench_cmd": "node dist-sim/bench.js",
-  "soak_cmd": "node dist-sim/soak.js"
+  "soak_cmd": "node --jitless --no-expose-wasm dist-sim/soak.js"
 }
