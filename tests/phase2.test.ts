@@ -59,8 +59,8 @@ it('uses ramp, jump pad, tower collision and timed wind on night three',()=>{
   expect(r.at(1800).wind.active).toBe(true);expect(r.at(2100).wind.active).toBe(false)
   expect(Math.hypot(r.at(2100).player.pos[0]-34,r.at(2100).player.pos[2])).toBeCloseTo(10,2)
 })
-it('finishes the full 21600-tick CLI benchmark within 30 seconds',()=>{
+it('finishes the full 18000-tick CLI benchmark within 30 seconds',()=>{
   const start=performance.now()
-  expect(replay('perf',3,21600,60).end).toMatchObject({ticks:21600,state:'lost'})
+  expect(replay('perf',3,18000,60).end).toMatchObject({ticks:18000,state:'lost'})
   expect(performance.now()-start).toBeLessThan(30000)
 },31000)

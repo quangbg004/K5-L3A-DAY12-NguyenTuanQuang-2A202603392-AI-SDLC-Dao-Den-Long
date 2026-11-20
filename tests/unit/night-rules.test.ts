@@ -21,11 +21,11 @@ it('prioritises death even with lit lamps, and victory over dawn on last deposit
   const lost=new Game(contract.tuning,1,{...isolated,lanterns:lamps,player:{flames:0}})
   lost.step();expect(lost.events.at(-1)?.data.reason).toBe('no_flames')
   const won=new Game(contract.tuning,1,{...isolated,time_left_s:1/60,player:{carried:10},lanterns:[{id:'L1',pos:[0,0,0]},...lamps.slice(1)]})
-  won.step({interact:true});expect(won.state).toBe('won');expect(won.score).toBe(350)
+  won.step({interact:true});expect(won.state).toBe('won');expect(won.score).toBe(1046)
 })
 it('selects smaller lamp id on a distance tie and checks pickup height',()=>{
   const g=new Game(contract.tuning,1,{...isolated,lanterns:[{id:'L2',pos:[1,0,0]},{id:'L1',pos:[-1,0,0]}],motes:[[0,1.5,0],[0,1.501,0]]})
-  g.step({interact:true});expect(g.score).toBe(10);expect(g.lanterns[0].deposited).toBe(1);expect(g.motes.length).toBe(1)
+  g.step({interact:true});expect(g.score).toBe(5);expect(g.lanterns[0].deposited).toBe(1);expect(g.motes.length).toBe(1)
 })
 it('pushes over fifteen steps and dash grants no invulnerability',()=>{
   const g=new Game(contract.tuning,1,{...isolated,player:{carried:3},shades:[{id:'S1',pos:[0,.8,0]}]})
