@@ -102,6 +102,7 @@ function animate(now:number){
   view.draw(game,yaw,['menu','intro','choose'].includes(screen),now/1000,dt,colorblind)
   if(screen==='playing'){
     const spawn=game.simTick<spawnUntil?game.shades.find(s=>s.id===spawnId):undefined
+    el('arrow').style.color=spawn?(colorblind?'#00B3FF':'#7A3CFF'):''
     const angle=spawn?Math.atan2(spawn.pos[0]-game.player.pos[0],game.player.pos[2]-spawn.pos[2])*180/Math.PI+yaw*180/Math.PI:view.indicator(game)
     hud(game,angle,colorblind,game.simTick<hitUntil)
     const messages=[]
@@ -109,7 +110,7 @@ function animate(now:number){
     if(game.windWarning)messages.push('Gió mạnh sắp đến')
     if(game.timeLeft<=10)messages.push('Còn '+Math.ceil(game.timeLeft)+' giây')
     const weak=game.lanterns.filter(l=>l.lit&&!game.isSafe(l))
-    if(weak.length)messages.push('Đèn sắp cạn dầu · '+weak.map(l=>l.id).join(', '))
+    if(weak.length)messages.push((colorblind?'⚠ ':'')+'Đèn sắp cạn dầu · '+weak.map(l=>l.id).join(', '))
     el('captions').textContent=messages.join('　')
     if(el('prompt').textContent?.startsWith('E —'))el('prompt').textContent=keyLabel(keys.interact)+el('prompt').textContent!.slice(1)
     if(!game.dashCd||game.charmTicks)el('dash').textContent='⇢ Lướt · '+keyLabel(keys.dash)
