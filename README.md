@@ -1,6 +1,10 @@
+[Xem video demo v1.0.0](docs/demo/demo.mp4)
+
 # Đảo Đèn Lồng · Ba hòn đảo
 
 Dẫn Mây qua Đảo Bến, Đảo Cau và Đảo Chuông để giữ ít nhất 3/5, 4/6 và 5/7 đèn sáng tới bình minh. Bắt đầu hành trình từ menu hoặc chọn một Đêm để chơi riêng. Giữa hai Đêm, Mây hồi đầy 3 Ngọn Lửa. Tổng điểm Bình Minh cộng các Đêm đã thắng trong hành trình.
+
+![Mây trên Đảo Bến](docs/proof/phase-4/playing.png)
 
 ## Cài và chơi
 
@@ -27,11 +31,27 @@ Mỗi đom đóm nạp hoặc châm dầu cộng 5 điểm. Thắp mới cộng 
 
 ## Kiểm chứng
 
-Chạy `npm run verify:all` để build và kiểm tra CLI v1.2. CLI chấp nhận `--night 1`, `2` hoặc `3`. Ví dụ chạy kịch bản Gió Lạc trên cầu tre:
+Chạy `npm run verify:all` để build và kiểm tra CLI v1.3. CLI chấp nhận `--night 1`, `2` hoặc `3`. Ví dụ chạy kịch bản Gió Lạc trên cầu tre:
 
 ```sh
 node dist-sim/headless.js --seed 42 --night 2 --scenario tests/scenarios/night2-drifter-charm.json --inputs tests/scenarios/night2-drifter-charm-inputs.json --ticks 124 --out replay.jsonl
 ```
+
+## Đo và xuất dữ liệu
+
+Sau khi build, chạy các lệnh sau từ gốc repo.
+
+```sh
+node dist-sim/bench.js --seed 42 --duration 30 --out bench.json
+node dist-sim/soak.js --seed 7 --nights 10 --out soak.json
+node dist-sim/launcher.js --export-leaderboard out.json
+```
+
+Benchmark mở Chromium ở 1280×720. Cài Chromium bằng `npx playwright install chromium` hoặc dùng Edge/Chrome đã cài (biến môi trường BROWSER_CHANNEL nhận msedge hoặc chrome). Chrome nhận cờ tắt giới hạn khung hình và VSync. Số đo phản ánh thời gian khung hình của ứng dụng trên GPU đang dùng. RSS toàn bộ trình duyệt đa tiến trình không có trong Web API nên peak_mem_mb là null. Soak dùng 10 Đêm liên tiếp, seed ban đầu + chỉ số Đêm tính từ 0.
+
+Trong Cài đặt có thể đổi 9 phím, bật chữ lớn và giảm chuyển động. Khi thua hoặc thắng Đêm cuối, nhập tên để lưu điểm của các Đêm đã thắng. Launcher lưu top 10 trong ~/.dao-den-long/leaderboard.json; DAO_DEN_LONG_DATA_DIR cho phép chọn thư mục khác. Bản lưu trữ web tĩnh dùng localStorage, lệnh export đọc dữ liệu của launcher.
+
+Gói ZIP của Release chỉ cần Node.js 20.17 trở lên. Giải nén và chạy `node dist-sim/launcher.js`. [Hồ sơ kiểm chứng Phase 4](docs/proof/phase-4.md)
 
 ## Sáng tạo của tôi
 

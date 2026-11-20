@@ -31,3 +31,12 @@
 | Bản 3D | Đã tích hợp thanh dầu, nhấp nháy 1 Hz, vết rách, luồng hút dầu, HUD động và bảng màu lưu bền vững. |
 | Nghiệm thu | Build và 34/34 test đạt. Edge đo khoảng 48 FPS ở 1280×720 trên ba đảo, kiểm tra bảng màu sau reload, nhấp nháy và bình minh. CLI hoàn tất 18.000 tick trong 1,13 giây và 0,87 giây, SHA-256 trùng. |
 | Bàn giao | Đã lưu [ảnh, replay, log và số đo](proof/phase-3.md). Mốc bàn giao cục bộ dùng tag phase-3. |
+
+## Phase 4 · Phát hành v1.0.0
+
+| Mốc | Kết quả |
+|---|---|
+| Phạm vi | Đã đọc Ticket-04 và kế hoạch, khai báo contract v1.3 cùng các lệnh bench, soak, launcher. |
+| CLI và giao diện | Đã chạy benchmark và soak chuẩn, bổ sung launcher, lưu điểm trên đĩa, đổi phím, phụ đề, giảm chuyển động và chữ lớn. |
+| Nghiệm thu | 37/37 test đạt; clone sạch khởi động thành công. Benchmark cuối đạt 984,32 FPS trên GTX 1050 Ti. Soak 0 crash, RSS tăng 13,6%. Đã kiểm tra điểm sau restart, phím đổi, cỡ chữ và phụ đề. |
+| Đóng gói | Đã chuẩn bị [hồ sơ nghiệm thu](proof/phase-4.md), [retro](notes/retro.md), video và workflow phát hành ZIP từ tag v1.0.0. |

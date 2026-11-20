@@ -15,3 +15,6 @@ AI đã tạo chuỗi input điều hướng trên bản đồ mặc định, l�
 ## Phase 3
 
 Codex đối chiếu Ticket-03 với bộ test Phase 2, giữ nguyên quy trình tick 60 Hz và chuyển dầu sang số nguyên phần sáu mươi. ADR ghi lại quy tắc cạn dầu và ưu tiên kết quả. Bài kiểm chứng Edge dùng bản build mặc định để đo FPS và một tình huống cuối Đêm để tái lập trạng thái đèn yếu, Bóng Mực hút dầu và bình minh. Các ca bị thay thế được ghi trong CHANGELOG.
+
+## Phase 4
+Codex bổ sung đo thời gian khung hình thật, RSS, xuất điểm trên đĩa và kiểm thử trình duyệt. Khi proxy của fixture chặn POST vì origin, đã sửa proxy test và đối chiếu lại dữ liệu sau khi khởi động lại launcher. Video lấy hình từ game thật, log Vitest, JSONL CLI, số đo và lịch sử Git. Tổng ước lượng token và những cải tiến đề xuất được ghi trong retro.
