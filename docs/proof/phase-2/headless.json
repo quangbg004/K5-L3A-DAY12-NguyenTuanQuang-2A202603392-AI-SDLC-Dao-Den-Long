@@ -1,0 +1,29 @@
+{
+  "node": "v20.17.0",
+  "platform": "win32",
+  "night": 3,
+  "seed": 42,
+  "snapshot_every": 10,
+  "trials": [
+    {
+      "ms": 1602.8863000000001,
+      "sha256": "764b94c8ee02792142d97aa424c163aa9da203d20ba53b44acb4b93aa6037f6a",
+      "end": {
+        "type": "end",
+        "ticks": 21600,
+        "state": "lost",
+        "score": 0
+      }
+    },
+    {
+      "ms": 1879.2307999999994,
+      "sha256": "764b94c8ee02792142d97aa424c163aa9da203d20ba53b44acb4b93aa6037f6a",
+      "end": {
+        "type": "end",
+        "ticks": 21600,
+        "state": "lost",
+        "score": 0
+      }
+    }
+  ]
+}

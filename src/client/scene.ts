@@ -138,7 +138,8 @@ export function scene(host:HTMLElement){
     extras(g,time);trail.visible=g.dashLeft>0
     leaves.visible=g.windWarning||g.wind.active
     if(leaves.visible)for(let i=0;i<leaves.count;i++){
-      cloud.position.set(hero.position.x+(i*17+time*6)%22-11,hero.position.y+1+(i%5),hero.position.z+(i*13)%17-8)
+      const a=g.wind.dir_deg*Math.PI/180,u=(i*17+time*6)%22-11,v=(i*13)%17-8
+      cloud.position.set(hero.position.x+u*Math.cos(a)-v*Math.sin(a),hero.position.y+1+i%5,hero.position.z+u*Math.sin(a)+v*Math.cos(a))
       cloud.scale.set(.18,.025,.07);cloud.rotation.y=time+i;cloud.updateMatrix();leaves.setMatrixAt(i,cloud.matrix);leaves.instanceMatrix.needsUpdate=true
     }
     g.lanterns.forEach((l,i)=>{
@@ -156,7 +157,8 @@ export function scene(host:HTMLElement){
       if(e.age>(e.sky?12:.45)){world.remove(e.obj);effects.splice(i,1)}
     }
     if(overview){
-      camera.position.set(45,32,55);camera.lookAt(-8,0,6)
+      if(g.night===2){camera.position.set(52,55,88);camera.lookAt(23,0,0)}
+      else{camera.position.set(45,32,55);camera.lookAt(-8,0,6)}
     }else{
       camera.position.set(hero.position.x+Math.sin(yaw)*12,8+hero.position.y*.4,hero.position.z+Math.cos(yaw)*12)
       camera.lookAt(hero.position.x-Math.sin(yaw)*3,1.1,hero.position.z-Math.cos(yaw)*3)

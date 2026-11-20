@@ -1,0 +1,179 @@
+[
+  {
+    "night": 1,
+    "end": {
+      "type": "end",
+      "ticks": 8421,
+      "state": "won",
+      "score": 1468
+    },
+    "lit": [
+      {
+        "type": "event",
+        "tick": 1015,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L1"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 2470,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L3"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 4287,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L2"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 5965,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L4"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 8421,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L5"
+        }
+      }
+    ]
+  },
+  {
+    "night": 2,
+    "end": {
+      "type": "end",
+      "ticks": 12239,
+      "state": "won",
+      "score": 1602
+    },
+    "lit": [
+      {
+        "type": "event",
+        "tick": 2050,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L1"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 3751,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L2"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 5790,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L3"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 8407,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L6"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 10733,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L4"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 12239,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L5"
+        }
+      }
+    ]
+  },
+  {
+    "night": 3,
+    "end": {
+      "type": "end",
+      "ticks": 17735,
+      "state": "won",
+      "score": 1678
+    },
+    "lit": [
+      {
+        "type": "event",
+        "tick": 1413,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L7"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 3912,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L5"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 7279,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L4"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 10873,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L6"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 14216,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L2"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 15454,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L3"
+        }
+      },
+      {
+        "type": "event",
+        "tick": 17735,
+        "name": "lantern_lit",
+        "data": {
+          "lantern_id": "L1"
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "viewport": [
+    1280,
+    720
+  ],
+  "renderer": "ANGLE (Intel, Intel(R) HD Graphics 630 (0x0000591B) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "fps": [
+    {
+      "night": 1,
+      "frames": 240,
+      "ms": 5000.099999999999,
+      "fps": 47.99904001919962
+    },
+    {
+      "night": 2,
+      "frames": 241,
+      "ms": 5020.7,
+      "fps": 48.00127472264824
+    },
+    {
+      "night": 3,
+      "frames": 240,
+      "ms": 5000,
+      "fps": 48
+    }
+  ]
+}

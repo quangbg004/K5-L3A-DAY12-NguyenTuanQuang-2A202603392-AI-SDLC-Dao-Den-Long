@@ -17,7 +17,7 @@ export function slider(key:string,label:string,min:number,max:number,step:number
 }
 export function hud(g:Game,angle:number|null){
   const sec=Math.ceil(g.timeLeft)
-  el('time').textContent=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0')
+  el('time').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')
   el('time').classList.toggle('urgent',g.timeLeft<=30)
   el('lamps').textContent=g.lanterns.filter(l=>l.lit).length+' / '+g.lanterns.length
   el('life').textContent='♥'.repeat(g.player.flames)+'♡'.repeat(3-g.player.flames);el('score').textContent=String(g.score)

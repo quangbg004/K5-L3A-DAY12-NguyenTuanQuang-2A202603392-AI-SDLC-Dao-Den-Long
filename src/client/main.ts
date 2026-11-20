@@ -45,7 +45,7 @@ function result(){
 function paused(){
   overlay('paused');panel('Đêm 0'+night+' · '+game.map.name,'Tạm dừng','',[['Tiếp tục',resume],['Chơi lại Đêm',start],['Cài đặt',settings],['Về menu',menu]])
 }
-function resume(){game.step({pause:false});game.step({pause:true,move:[0,0],jump:false,dash:false,pulse:false,interact:false});play()}
+function resume(){game.releaseControls();game.step({pause:true});game.releaseControls();play()}
 function settings(){
   const back=screen==='paused'?paused:menu
   overlay('settings');panel('Đảo Đèn Lồng','Cài đặt','',[['Quay lại',back]])
@@ -74,7 +74,7 @@ function step(){
   for(const e of game.events)chime(e.name,game.player.carried)
   if(game.jumped)chime('jump')
   if(game.windWarning&&!warn)chime('wind')
-  if(Math.ceil(game.timeLeft)!==oldTime&&game.timeLeft<=10)chime('countdown')
+  if(Math.ceil(game.timeLeft)!==oldTime&&game.timeLeft<=10&&game.timeLeft>0)chime('countdown')
   if(game.state==='paused')paused()
   if(game.state==='won'||game.state==='lost')result()
 }

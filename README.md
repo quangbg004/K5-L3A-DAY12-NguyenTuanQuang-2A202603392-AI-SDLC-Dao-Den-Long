@@ -1,8 +1,10 @@
-# Day 12 — AI SDLC: Đảo Đèn Lồng
+# Đảo Đèn Lồng · Ba hòn đảo
 
-## Chơi Đêm 1 – Đảo Bến
+Dẫn Mây qua Đảo Bến, Đảo Cau và Đảo Chuông để thắp lần lượt 5, 6 và 7 đèn trước bình minh. Bắt đầu hành trình từ menu hoặc chọn một Đêm để chơi riêng. Giữa hai Đêm, Mây hồi đầy 3 Ngọn Lửa. Tổng điểm Bình Minh cộng các Đêm đã thắng trong hành trình.
 
-Dẫn Mây nhặt đom đóm và thắp năm đèn lồng trước bình minh. Cần Node.js 20.17 trở lên và trình duyệt hỗ trợ WebGL 2. Chạy từ thư mục gốc rồi mở địa chỉ Vite in ra.
+## Cài và chơi
+
+Dùng Node.js 20.17 trở lên và trình duyệt hỗ trợ WebGL 2. Chạy tại thư mục dự án rồi mở địa chỉ mà terminal hiển thị.
 
 ```sh
 npm ci
@@ -10,23 +12,28 @@ npm run build
 npm start
 ```
 
-WASD để đi, Space để nhảy, ←/→ để xoay camera. Di chuyển đến gần đom đóm để tự nhặt. Nhấn E cạnh đèn để nạp, mỗi đèn cần 3 đốm và túi chứa 5 đốm. Q hoặc chuột phải tiêu 1 đốm để xua Bóng Mực. Đèn đã sáng bảo vệ Mây trong vòng 5 m. Mép đảo giữ Mây lại (`fall_enabled: false`). Hết 3 ngọn lửa hoặc hết 180 giây thì thua. Nút **Chơi lại** bắt đầu đêm mới.
+| Điều khiển | Hành động |
+|---|---|
+| WASD, Space | Di chuyển và nhảy |
+| ←/→ hoặc chuột sau khi nhấp vào cảnh | Xoay camera |
+| Shift | Lướt trong 0,2 giây; Bùa Gió cho phép lướt liên tiếp bằng các lần bấm riêng |
+| E | Nạp tối đa lượng còn thiếu vào đèn gần nhất trong 2 m. Túi chứa 10 đốm, mỗi đèn cần 10 |
+| Q hoặc chuột phải | Tiêu 3 đốm để tỏa sáng, đẩy lùi Bóng Mực hoặc buộc Gió Lạc thả đồ |
+| P hoặc Esc | Tạm dừng, tiếp tục, chỉnh âm lượng/độ nhạy, chơi lại Đêm hoặc về menu |
 
-Mỗi đốm nhặt được cộng 10 điểm, mỗi đèn thắp cộng 100 và mỗi Bóng Mực bị xung làm choáng cộng 25. Khi thắng, mỗi giây nguyên còn lại cộng 2 điểm và mỗi ngọn lửa còn lại cộng 50.
+Mỗi đốm **nạp vào đèn** cộng 10 điểm, thắp đèn cộng 100, mỗi Bóng Mực trúng xung cộng 5. Thắng Đêm thưởng 2 điểm cho mỗi giây nguyên còn lại và 50 điểm cho mỗi Ngọn Lửa. Đèn sáng bảo vệ trong bán kính 6 m. Rơi khỏi đảo mất 1 lửa và toàn bộ đom đóm đang mang.
 
-## Kiểm thử và headless
+## Kiểm chứng
 
-Chạy `npm run verify:all` để build và kiểm tra. Sau khi build, có thể chạy một ván bằng CLI.
+Chạy `npm run verify:all` để build và kiểm tra CLI v1.1. CLI chấp nhận `--night 1`, `2` hoặc `3`. Ví dụ chạy kịch bản Gió Lạc trên cầu tre:
 
 ```sh
-node dist-sim/headless.js --seed 42 --night 1 --scenario tests/scenarios/win.json --inputs tests/scenarios/win-inputs.json --ticks 10 --out win.jsonl
+node dist-sim/headless.js --seed 42 --night 2 --scenario tests/scenarios/night2-drifter-charm.json --inputs tests/scenarios/night2-drifter-charm-inputs.json --ticks 124 --out replay.jsonl
 ```
 
 ## Sáng tạo của tôi
 
-Mỗi đèn được thắp thả một chiếc đèn trời lên biển mây, làm sương thưa dần và tăng ánh sáng trên đảo. Chiếc đèn nhỏ ở nón Mây đung đưa khi di chuyển. Nhặt đom đóm, tỏa sáng và thắp đèn tạo tiếng chuông ngũ cung bằng Web Audio. Các hiệu ứng nằm ở lớp hiển thị. Hai lần chạy CLI cùng seed cho JSONL giống hệt từng byte. [Bằng chứng và ảnh chơi thử](docs/proof/phase-1.md)
-
-Theo dõi [tiến độ](docs/TIEN-DO.md), [giả định](docs/notes/phase-1-assumptions.md) và [nhật ký dùng AI](docs/notes/ai-log.md).
+Mây đội nón lá có đèn nhỏ đung đưa. Mỗi đèn vừa thắp thả một đèn trời lên biển mây và làm sương thưa dần. Âm nhạc và chuông ngũ cung được tổng hợp trên trình duyệt. [Kết quả, ảnh và số đo Phase 2](docs/proof/phase-2.md) · [Tiến độ từng mốc](docs/TIEN-DO.md) · [Giả định](docs/notes/phase-2-assumptions.md) · [Nhật ký AI](docs/notes/ai-log.md)
 
 > **Cá nhân** (1 người / 1 MSSV) · Áp dụng SDLC cùng AI để xây một **game 3D** qua **4 phase**, từ yêu cầu ban đầu tới bản phát hành.
 > **Lab board + trợ giảng:** **[Đảo Đèn Lồng Lab](https://claude.ai/artifact/Q1RYyv1dxjUczzCbd2ZnoW)**

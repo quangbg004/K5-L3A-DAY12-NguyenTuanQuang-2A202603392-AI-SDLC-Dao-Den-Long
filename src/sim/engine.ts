@@ -19,6 +19,8 @@ export class Game{
   vel:Pos=[0,0,0]; grounded=false; facing:[number,number]=[0,1]
   invuln=0; dashCd=0; pulseCd=0; charmTicks=0; dashLeft=0; fallWait=0; jumped=false
   private prior=idle(); private random; private duration
+  private suspendedY:number|null=null
+  private excluded=new Set<Shade>()
   private dashDir:[number,number]=[0,1]; private launched:Pos|null=null
   private ids={M:0,S:0,D:0}
   constructor(readonly t:Tuning,seed=42,private scenario:Scenario={},readonly night:Night=1){
@@ -75,13 +77,14 @@ export class Game{
   }
   private move(input:Controls,jump:boolean,dash:boolean){
     const {pos}=this.player
+    if(!this.dashLeft&&this.suspendedY!==null){this.vel[1]=this.suspendedY;this.suspendedY=null}
     const [mx,mz]=input.move,a=input.cam_yaw_deg*Math.PI/180,len=Math.hypot(mx,mz)
     if(len)this.facing=[(mx*Math.cos(a)+mz*Math.sin(a))/len,(mz*Math.cos(a)-mx*Math.sin(a))/len]
     const pad=this.grounded&&this.map.pads.find(p=>distance(p.pos,pos)<=1&&Math.abs(p.pos[1]-pos[1])<.05)
     if(pad){this.launched=pad.velocity;this.vel[1]=pad.velocity[1];this.grounded=false}
     else if(jump&&this.grounded){this.vel[1]=7;this.grounded=false;this.jumped=true}
     if(dash&&!this.dashLeft&&(!this.dashCd||this.charmTicks)){
-      this.dashLeft=12;this.dashCd=90;this.dashDir=[...this.facing];this.emit('dash')
+      this.suspendedY=this.vel[1];this.dashLeft=12;this.dashCd=90;this.dashDir=[...this.facing];this.emit('dash')
     }
     const speed=(this.charmTicks?7.2:this.t.player_speed)*Math.min(1,len)
     const dashing=this.dashLeft>0
@@ -90,7 +93,7 @@ export class Game{
     if(this.wind.active){const w=this.wind.dir_deg*Math.PI/180;this.vel[0]+=2*Math.cos(w);this.vel[2]+=2*Math.sin(w)}
     slide(this.night,pos,this.vel[0]/60,this.vel[2]/60)
     const h=ground(this.night,pos[0],pos[2])
-    if(dashing)this.dashLeft--
+    if(dashing){this.dashLeft--;this.vel[1]=0;this.grounded=Math.abs(pos[1]-h)<1e-6}
     else{
       this.vel[1]-=20/60
       pos[1]+=this.vel[1]/60
@@ -100,7 +103,7 @@ export class Game{
     }
     if(pos[1]<-10){
       const lost=this.player.carried
-      this.player.carried=0;this.player.flames--;this.fallWait=60;this.dashLeft=0;this.launched=null
+      this.player.carried=0;this.player.flames--;this.fallWait=60;this.suspendedY=null;this.dashLeft=0;this.launched=null
       this.emit('player_hit',{by:'fall',flames:this.player.flames,dropped:0,lost})
     }
   }
@@ -124,6 +127,7 @@ export class Game{
   }
   private protect(s:Shade){
     for(const l of this.lanterns)if(l.lit&&distance(s.pos,l.pos)<this.t.safe_radius){
+      this.excluded.add(s)
       const [x,z]=direction(l.pos,s.pos)
       s.pos[0]=l.pos[0]+this.t.safe_radius*x;s.pos[2]=l.pos[2]+this.t.safe_radius*z
     }
@@ -172,7 +176,7 @@ export class Game{
       this.emit('drifter_steal',{drifter_id:d.id,amount:d.stolen,carried:p.carried})
     }
     if(this.invuln||this.lanterns.some(l=>l.lit&&distance(l.pos,p.pos)<=this.t.safe_radius))return
-    for(const s of this.shades)if((s.state==='chase'||s.state==='wander')&&distance(s.pos,p.pos)<=this.t.shade_hit_radius&&Math.abs(s.pos[1]-p.pos[1])<=1.5){
+    for(const s of this.shades)if(!this.excluded.has(s)&&(s.state==='chase'||s.state==='wander')&&distance(s.pos,p.pos)<=this.t.shade_hit_radius&&Math.abs(s.pos[1]-p.pos[1])<=1.5){
       const dropped=Math.floor(p.carried*this.t.hit_drop_ratio)
       p.flames--;p.carried-=dropped;this.drops(p.pos,dropped);this.invuln=90
       s.state='recoil';s.dir=direction(p.pos,s.pos);s.until=this.simTick+61
@@ -196,8 +200,9 @@ export class Game{
       this.drifters.push({id:this.id('D'),pos:[p[0],p[1]+.8,p[2]],state:'idle',until:0,stolen:0})
     }
   }
+  releaseControls(){this.prior=idle()}
   step(frame:Partial<Controls>={}){
-    this.events=[];this.jumped=false
+    this.events=[];this.jumped=false;this.excluded.clear()
     if(this.state==='won'||this.state==='lost')return
     this.tick++
     const input={...this.prior,...frame},prev=this.prior
@@ -237,7 +242,7 @@ export class Game{
   snapshot(){
     const entity=(e:Entity)=>({id:e.id,pos:coords(e.pos)})
     return {type:'snapshot',tick:this.tick,sim_tick:this.simTick,night:this.night,state:this.state,time_left_s:this.timeLeft,score:this.score,wind:{...this.wind},
-      player:{...this.player,pos:coords(this.player.pos),vel:coords(this.vel),grounded:this.grounded,invuln:this.invuln>0,dash_cd_s:round(this.dashCd/60),pulse_cd_s:round(this.pulseCd/60),charm_s:round(this.charmTicks/60)},
+      player:{...this.player,pos:coords(this.player.pos),vel:coords(this.vel),grounded:this.grounded,invuln:this.invuln>0,dash_cd_s:this.charmTicks?0:round(this.dashCd/60),pulse_cd_s:round(this.pulseCd/60),charm_s:round(this.charmTicks/60)},
       lanterns:this.lanterns.map(l=>({...l,...entity(l)})),motes_active:this.motes.length,
       motes:this.motes.map(m=>({...entity(m),kind:m.kind,ttl_s:m.kind==='random'?null:round((m.expires-this.simTick)/60)})),
       shades:this.shades.map(s=>({...entity(s),state:s.state})),drifters:this.drifters.map(d=>({...entity(d),state:d.state,stolen:d.stolen})),
