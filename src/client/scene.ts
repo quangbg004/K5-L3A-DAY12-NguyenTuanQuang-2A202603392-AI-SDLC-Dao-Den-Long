@@ -157,6 +157,32 @@ export function scene(host:HTMLElement){
       }
     }
   }
+  function instances(geometry:T.BufferGeometry,color:string,count:number){
+    const batch=new T.InstancedMesh(geometry,new T.MeshStandardMaterial({color,flatShading:true}),count)
+    batch.instanceMatrix.setUsage(T.DynamicDrawUsage);batch.frustumCulled=false;batch.visible=false
+    world.add(batch);return batch
+  }
+  const bodies=instances(ball,c.shade,200),eyes=instances(ball,c.rim,400),flies=instances(glow,c.mote,100),wings=instances(ball,c.halo,200)
+  const part=new T.Object3D()
+  function instance(batch:T.InstancedMesh,i:number,x:number,y:number,z:number,w:number,h:number,d:number){
+    part.position.set(x,y,z);part.scale.set(w,h,d);part.updateMatrix();batch.setMatrixAt(i,part.matrix)
+  }
+  function crowds(g:Game,time:number){
+    for(const batch of [bodies,eyes,flies,wings]){batch.visible=true;batch.instanceMatrix.needsUpdate=true}
+    g.shades.forEach((s,i)=>{
+      const [x,y,z]=s.pos,h=y+1+.17*Math.sin(time*3+i),a=Math.atan2(-x,-z)
+      instance(bodies,i,x,h,z,.72,.9,.64)
+      for(let j=0;j<2;j++){
+        const dx=(j-.5)*.46
+        instance(eyes,2*i+j,x+Math.cos(a)*dx+.52*Math.sin(a),h+.1,z+.52*Math.cos(a)-Math.sin(a)*dx,.095,.13,.08)
+      }
+    })
+    g.motes.forEach((m,i)=>{
+      const [x,y,z]=m.pos,h=y+.83+.17*Math.sin(time*3+i)
+      instance(flies,i,x,h,z,1,1,1)
+      for(let j=0;j<2;j++)instance(wings,2*i+j,x+(j-.5)*.38,h+.11,z,.17,.1,.07)
+    })
+  }
   function draw(g:Game,yaw:number,overview:boolean,time:number,dt:number,colorblind:boolean){
     const w=host.clientWidth,h=host.clientHeight
     if(r.domElement.width!==Math.floor(w*r.getPixelRatio())||r.domElement.height!==Math.floor(h*r.getPixelRatio()))r.setSize(w,h,false)
@@ -174,7 +200,7 @@ export function scene(host:HTMLElement){
     g.lanterns.forEach((l,i)=>{
       lamps[i].group.parent!.position.set(...l.pos)
       const shade=lamps[i].shade,meter=meters[i]
-      const bright=g.isSafe(l)||g.simTick%60<30
+      const bright=g.isSafe(l)||g.simTick%60<30||document.body.classList.contains('reduced-motion')
       shade.material=l.lit?(bright?litMat:dimMat):darkMat
       lamps[i].group.scale.y=.98*(l.lit?1:.8)
       meter.tear.visible=!l.lit
@@ -187,8 +213,9 @@ export function scene(host:HTMLElement){
     })
     const lit=g.lanterns.filter(l=>l.lit).length
     sky.intensity=.15+.55*lit/g.lanterns.length;fog.density=.009-lit*.001
-    clouds.rotation.y=time*.003
-    sync(g.motes,moteObjects,true,time);sync(g.shades,shadeObjects,false,time,colorblind)
+    clouds.rotation.y=g.benchmark?0:time*.003
+    if(g.benchmark)crowds(g,time)
+    else{sync(g.motes,moteObjects,true,time);sync(g.shades,shadeObjects,false,time,colorblind)}
     let streamCount=0
     for(const s of g.shades){
       if(s.state!=='drain'||streamCount>=64)continue
@@ -208,11 +235,12 @@ export function scene(host:HTMLElement){
       else e.obj.scale.setScalar(Math.min(1,e.age/.45)*g.t.pulse_radius)
       if(e.age>(e.sky?12:.45)){world.remove(e.obj);effects.splice(i,1)}
     }
-    if(overview){
+    if(g.benchmark){const a=time*2*Math.PI/15;camera.position.set(30*Math.cos(a),15,30*Math.sin(a));camera.lookAt(0,0,0)}
+    else if(overview){
       if(g.night===2){camera.position.set(52,55,88);camera.lookAt(23,0,0)}
       else{camera.position.set(45,32,55);camera.lookAt(-8,0,6)}
     }else{
-      camera.position.set(hero.position.x+Math.sin(yaw)*12,8+hero.position.y*.4,hero.position.z+Math.cos(yaw)*12)
+      camera.position.set(hero.position.x+Math.sin(yaw)*12,8+(document.body.classList.contains('reduced-motion')?0:hero.position.y*.4),hero.position.z+Math.cos(yaw)*12)
       camera.lookAt(hero.position.x-Math.sin(yaw)*3,1.1,hero.position.z-Math.cos(yaw)*3)
     }
     for(const m of meters)m.pivot.quaternion.copy(camera.quaternion)

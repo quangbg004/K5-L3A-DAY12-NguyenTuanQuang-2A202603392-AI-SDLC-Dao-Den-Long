@@ -20,3 +20,12 @@ footer{bottom:15px;left:4vw;right:4vw;font-size:12px;text-align:center;color:#F5
 #prompt.danger{color:#FF5A5F}
 .colorblind #time.urgent,.colorblind #prompt.danger{color:#FFFFFF}
 @media(max-width:650px){.points{max-width:33vw}}
+body{--unit:18px;font-size:var(--unit)}body.large-text{--unit:22.5px}
+#panel{max-height:83dvh;overflow:auto;width:min(510px,88vw)}
+#panel:has(table){width:min(900px,90vw)}
+footer,button,input,output,.eyebrow,.inventory,.inventory span,.abilities,#prompt,#options,#hud>div{font-size:var(--unit)}
+body.large-text h1{font-size:clamp(52px,6.25vw,85px)}body.large-text header{font-size:27.5px}body.large-text #time{font-size:30px}body.large-text .crest{font-size:45px}
+fieldset{margin:16px 0;border:1px solid #c9b48a55}fieldset button{margin:3px}
+#hud #captions{left:50%;bottom:145px;transform:translateX(-50%);text-align:center}#captions:empty{display:none}
+.reduced-motion *{animation:none!important;scroll-behavior:auto!important}
+td{padding:5px;border-bottom:1px solid #ffffff33}
