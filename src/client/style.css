@@ -16,3 +16,7 @@ footer{bottom:15px;left:4vw;right:4vw;font-size:12px;text-align:center;color:#F5
 .abilities{right:22px;bottom:22px;display:grid;gap:4px;font-size:12px}.abilities span:empty{display:none}
 #prompt{left:50%;bottom:90px;transform:translateX(-50%);color:#FFE9B0;font-size:14px}#prompt:empty{display:none}#hud #arrow{color:#F2C14E;border:0;background:transparent;font-size:26px;text-shadow:0 1px 4px #000}
 @media(max-width:650px){#panel{padding:20px}.life,.points,#time{font-size:12px}.abilities{bottom:86px;right:8px}.inventory{bottom:12px}footer{font-size:10px}}
+#options .palette-setting{display:flex;align-items:center;gap:.65rem}
+#prompt.danger{color:#FF5A5F}
+.colorblind #time.urgent,.colorblind #prompt.danger{color:#FFFFFF}
+@media(max-width:650px){.points{max-width:33vw}}

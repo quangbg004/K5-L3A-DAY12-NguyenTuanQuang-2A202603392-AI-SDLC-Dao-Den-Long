@@ -54,12 +54,33 @@ export function scene(host:HTMLElement){
   const charm=lamp(hero,.24).group;charm.position.set(.65,1.53,0)
   const lamps:Array<ReturnType<typeof lamp>>=[]
   const halos:T.Mesh[]=[]
+  const meters:{pivot:T.Group,fill:T.Mesh,tear:T.LineSegments}[]=[]
+  const tearGeo=new T.BufferGeometry().setFromPoints([
+    new T.Vector3(-.24,.49,.75),new T.Vector3(.08,.16,.87),
+    new T.Vector3(.08,.16,.87),new T.Vector3(-.09,-.03,.93),
+    new T.Vector3(-.09,-.03,.93),new T.Vector3(.23,-.48,.71)
+  ])
+  const tearInk=new T.LineBasicMaterial({color:0x11141e})
+  const meterGeo=new T.PlaneGeometry(1.8,.14)
+  const meterBack=new T.MeshBasicMaterial({color:0x243047})
+  const meterFill=new T.MeshBasicMaterial({color:c.gold})
+  const alternateEyes=new T.MeshBasicMaterial({color:0x00b3ff})
+  const normalEyes=new T.MeshBasicMaterial({color:c.rim})
+  const dimMat=new T.MeshStandardMaterial({color:c.lit,emissive:c.core,emissiveIntensity:.23})
+  const streams=new T.LineSegments(new T.BufferGeometry(),new T.LineBasicMaterial({color:0x9f6cf5}))
+  const streamPositions=new T.Float32BufferAttribute(new Float32Array(64*6),3)
+  streams.geometry.setAttribute('position',streamPositions);streams.frustumCulled=false;world.add(streams)
   for(let i=0;i<7;i++){
     const pole=new T.Group();world.add(pole)
     mesh(new T.CylinderGeometry(1.35,1.65,.55,8),'#77766f',pole,0,.26)
     mesh(new T.CylinderGeometry(.23,.34,4.8,8),c.wood,pole,0,2.4)
     mesh(new T.BoxGeometry(2.25,.26,.29),c.wood,pole,.75,4.7)
     const l=lamp(pole,.98);l.group.position.set(1.48,3.48,0);lamps.push(l)
+    const tear=new T.LineSegments(tearGeo,tearInk);l.group.add(tear)
+    const pivot=new T.Group();pivot.position.set(1.48,5.17,0);pole.add(pivot)
+    pivot.add(new T.Mesh(meterGeo,meterBack))
+    const fill=new T.Mesh(meterGeo,meterFill);fill.position.z=.01;pivot.add(fill)
+    meters.push({pivot,fill,tear})
     const halo=new T.Mesh(new T.CircleGeometry(6,48),new T.MeshBasicMaterial({color:0xffbf62,transparent:true,opacity:.19,depthWrite:false}))
     halo.rotation.x=-Math.PI/2;halo.position.y=.07;pole.add(halo);halos.push(halo)
   }
@@ -91,7 +112,7 @@ export function scene(host:HTMLElement){
   const leaves=new T.InstancedMesh(ball,new T.MeshBasicMaterial({color:c.gold}),30)
   world.add(leaves)
   const trail=ellipsoid(hero,c.halo,0,.7,-.8,.35,.23,1.1)
-  function sync(entities:Entity[],map:Map<string,T.Object3D>,mote:boolean,time:number){
+  function sync(entities:Entity[],map:Map<string,T.Object3D>,mote:boolean,time:number,colorblind=false){
     const active=new Set(entities.map(e=>e.id))
     for(const [id,o] of map)if(!active.has(id)){world.remove(o);map.delete(id)}
     entities.forEach((e,i)=>{
@@ -110,6 +131,7 @@ export function scene(host:HTMLElement){
       if(!mote) obj.rotation.y=Math.atan2(hero.position.x-obj.position.x,hero.position.z-obj.position.z)
       if('state' in e){
         obj.rotation.z=e.state==='stunned'?.9:0
+        for(const eye of obj.children.slice(1) as T.Mesh[])eye.material=colorblind?alternateEyes:normalEyes
         const body=obj.children[0] as T.Mesh
         body.material=e.state==='stunned'?stunnedMat:palette.get(c.shade)!
       }
@@ -128,7 +150,7 @@ export function scene(host:HTMLElement){
       }
     }
   }
-  function draw(g:Game,yaw:number,overview:boolean,time:number,dt:number){
+  function draw(g:Game,yaw:number,overview:boolean,time:number,dt:number,colorblind:boolean){
     const w=host.clientWidth,h=host.clientHeight
     if(r.domElement.width!==Math.floor(w*r.getPixelRatio())||r.domElement.height!==Math.floor(h*r.getPixelRatio()))r.setSize(w,h,false)
     camera.aspect=w/h;camera.updateProjectionMatrix()
@@ -144,12 +166,35 @@ export function scene(host:HTMLElement){
     }
     g.lanterns.forEach((l,i)=>{
       lamps[i].group.parent!.position.set(...l.pos)
-      lamps[i].shade.material=l.lit?litMat:darkMat;halos[i].visible=l.lit
+      const shade=lamps[i].shade,meter=meters[i]
+      const bright=g.isSafe(l)||g.simTick%60<30
+      shade.material=l.lit?(bright?litMat:dimMat):darkMat
+      lamps[i].group.scale.y=.98*(l.lit?1:.8)
+      meter.tear.visible=!l.lit
+      meter.tear.rotation.y=yaw
+      meter.pivot.visible=l.lit
+      meter.fill.visible=bright
+      meter.fill.scale.x=l.fuel60/(g.t.fuel_max*60)
+      meter.fill.position.x=-.9*(1-meter.fill.scale.x)
+      halos[i].visible=g.isSafe(l)
     })
     const lit=g.lanterns.filter(l=>l.lit).length
     sky.intensity=.15+.55*lit/g.lanterns.length;fog.density=.009-lit*.001
     clouds.rotation.y=time*.003
-    sync(g.motes,moteObjects,true,time);sync(g.shades,shadeObjects,false,time)
+    sync(g.motes,moteObjects,true,time);sync(g.shades,shadeObjects,false,time,colorblind)
+    let streamCount=0
+    for(const s of g.shades){
+      if(s.state!=='drain'||streamCount>=64)continue
+      const l=g.lanterns.find(l=>l.id===s.targetLanternId)
+      if(!l)continue
+      const start=new T.Vector3(l.pos[0]+1.48,l.pos[1]+3.48,l.pos[2])
+      const end=new T.Vector3(s.pos[0],s.pos[1]+.95,s.pos[2])
+      for(let i=0;i<4&&streamCount<64;i++){
+        const k=(i/4+time*.8)%1,a=start.clone().lerp(end,k),b=start.clone().lerp(end,Math.min(1,k+.13))
+        streamPositions.setXYZ(streamCount*2,a.x,a.y,a.z);streamPositions.setXYZ(streamCount*2+1,b.x,b.y,b.z);streamCount++
+      }
+    }
+    streams.geometry.setDrawRange(0,streamCount*2);streamPositions.needsUpdate=true
     for(let i=effects.length-1;i>=0;i--){
       const e=effects[i];e.age+=dt
       if(e.sky)e.obj.position.y+=dt*2
@@ -163,6 +208,7 @@ export function scene(host:HTMLElement){
       camera.position.set(hero.position.x+Math.sin(yaw)*12,8+hero.position.y*.4,hero.position.z+Math.cos(yaw)*12)
       camera.lookAt(hero.position.x-Math.sin(yaw)*3,1.1,hero.position.z-Math.cos(yaw)*3)
     }
+    for(const m of meters)m.pivot.quaternion.copy(camera.quaternion)
     r.render(world,camera)
   }
   function reset(){for(const e of effects)world.remove(e.obj);effects.length=0}

@@ -4,14 +4,17 @@ import type {Night} from '../sim/types.js'
 import contract from '../../game.contract.json'
 import {scene} from './scene.js'
 import {chime,music,unlock,volume} from './audio.js'
-import {el,hud,panel,preference,slider} from './ui.js'
+import {el,hud,panel,preference,slider,colorPreference} from './ui.js'
 import './style.css'
 
 const view=scene(el('world')),held=new Set<string>(),pressed=new Set<string>()
 let night:Night=1,game=new Game(contract.tuning),screen='menu',total=0,yaw=0,acc=0,previous=performance.now()
 let loud=preference('volume',50,0,100),sensitivity=preference('sensitivity',1,.2,2)
+let colorblind=preference('colorblind',0,0,1)===1,hitUntil=0
+function applyPalette(enabled:boolean){colorblind=enabled;document.body.classList.toggle('colorblind',enabled)}
+applyPalette(colorblind)
 volume(loud/100)
-const quotes=['Hãy theo những đốm sáng về bến. Năm ngọn đèn sẽ dẫn lối qua biển mây.','Cầu tre nối đôi bờ. Nếu nghe tiếng gió lùa qua cau, con nhớ giữ chặt túi đom đóm.','Trên tầng đá cao nhất có một tháp chuông. Khi ngọn đèn cuối sáng, bình minh sẽ trở về.']
+const quotes=['Hãy theo những đốm sáng về bến. Giữ ít nhất ba đèn sáng cho tới bình minh.','Cầu tre nối đôi bờ. Nếu nghe tiếng gió lùa qua cau, con nhớ giữ chặt túi đom đóm.','Trên tầng đá cao nhất có một tháp chuông. Giữ ít nhất năm ngọn đèn sáng đến bình minh.']
 function clear(){held.clear();pressed.clear()}
 function overlay(next:string){
   screen=next;clear();music(false);el('prompt').textContent='';el('hud').hidden=true
@@ -33,7 +36,7 @@ function play(){
   clear();el('panel').hidden=true;el('hud').hidden=false;screen='playing';document.body.classList.add('in-game')
   previous=performance.now();acc=0;unlock();music(true)
 }
-function start(){game=new Game(contract.tuning,42,{},night);yaw=0;view.reset();play()}
+function start(){game=new Game(contract.tuning,42,{},night);yaw=0;hitUntil=0;view.reset();play()}
 function result(){
   const won=game.state==='won'
   overlay('result');chime(game.state)
@@ -50,6 +53,7 @@ function settings(){
   const back=screen==='paused'?paused:menu
   overlay('settings');panel('Đảo Đèn Lồng','Cài đặt','',[['Quay lại',back]])
   slider('volume','Âm lượng (%)',0,100,1,loud,v=>{loud=v;unlock();volume(v/100);chime('countdown')})
+  colorPreference(colorblind,applyPalette)
   slider('sensitivity','Độ nhạy chuột',.2,2,.1,sensitivity,v=>sensitivity=v)
 }
 window.addEventListener('blur',clear)
@@ -71,7 +75,10 @@ function step(){
   const oldTime=Math.ceil(game.timeLeft),warn=game.windWarning
   game.step({move:[Number(down('KeyD'))-Number(down('KeyA')),Number(down('KeyS'))-Number(down('KeyW'))],cam_yaw_deg:yaw*180/Math.PI,jump:down('Space'),dash:down('ShiftLeft')||down('ShiftRight'),pulse:down('KeyQ'),interact:down('KeyE'),pause:down('KeyP')||down('Escape')})
   pressed.clear();view.events(game,game.events)
-  for(const e of game.events)chime(e.name,game.player.carried)
+  for(const e of game.events){
+    chime(e.name,game.player.carried)
+    if(e.name==='player_hit')hitUntil=game.simTick+90
+  }
   if(game.jumped)chime('jump')
   if(game.windWarning&&!warn)chime('wind')
   if(Math.ceil(game.timeLeft)!==oldTime&&game.timeLeft<=10&&game.timeLeft>0)chime('countdown')
@@ -84,8 +91,8 @@ function animate(now:number){
     acc+=dt
     while(acc>=1/60&&screen==='playing'){acc-=1/60;step()}
   }
-  view.draw(game,yaw,['menu','intro','choose'].includes(screen),now/1000,dt)
-  if(screen==='playing')hud(game,view.indicator(game))
+  view.draw(game,yaw,['menu','intro','choose'].includes(screen),now/1000,dt,colorblind)
+  if(screen==='playing')hud(game,view.indicator(game),colorblind,game.simTick<hitUntil)
   requestAnimationFrame(animate)
 }
 menu();requestAnimationFrame(animate)
