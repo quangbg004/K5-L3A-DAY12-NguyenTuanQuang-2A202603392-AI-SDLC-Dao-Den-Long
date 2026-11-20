@@ -51,6 +51,21 @@ export class Game{
     })
     this.emit('night_start',{night})
   }
+  benchmark=false
+  static createBench(t:Tuning,seed:number){
+    const random=mulberry32(seed)
+    const pos=():Pos=>{const r=39.8*Math.sqrt(random()),a=random()*Math.PI*2;return [r*Math.cos(a),0,r*Math.sin(a)]}
+    const lamps=maps[1].lamps.slice(0,3)
+    const shades=Array.from({length:200},()=>{
+      let p=pos()
+      while(lamps.some(l=>distance(l,p)<t.safe_radius))p=pos()
+      p[1]=.8
+      return {pos:p}
+    })
+    const game=new Game(t,seed,{lanterns:lamps.map((_,i)=>({id:'L'+(i+1),lit:true})),motes:Array.from({length:100},pos),shades,random_motes:false,random_shades:false})
+    game.benchmark=true
+    return game
+  }
   get timeLeft(){return Math.max(0,round(this.duration-this.simTick/60))}
   private id(prefix:'S'|'D'|'M'){
     let id:string
@@ -203,7 +218,7 @@ export class Game{
       const wasDraining=s.state==='drain'
       if(wasDraining&&d<=6)this.stopDrain(s,'chase')
       else if(wasDraining&&!this.drainTarget(s))this.stopDrain(s)
-      if(!this.excluded.has(s)&&!wasDraining&&s.state==='wander'&&d<=12)s.state='chase'
+      if(!this.benchmark&&!this.excluded.has(s)&&!wasDraining&&s.state==='wander'&&d<=12)s.state='chase'
       else if(s.state==='chase'&&d>18)s.state='wander'
       let speed=0,dir=s.dir
       if(s.state==='stunned'&&s.push>0){speed=4*60/15;s.push--}
@@ -265,6 +280,7 @@ export class Game{
     this.events=[];this.jumped=false;this.excluded.clear()
     if(this.state==='won'||this.state==='lost')return
     this.tick++
+    if(this.benchmark){this.simTick++;this.enemies();return}
     const input={...this.prior,...frame},prev=this.prior
     this.prior=input
     const edge=(k:'pause'|'jump'|'dash'|'pulse'|'interact')=>input[k]&&!prev[k]
