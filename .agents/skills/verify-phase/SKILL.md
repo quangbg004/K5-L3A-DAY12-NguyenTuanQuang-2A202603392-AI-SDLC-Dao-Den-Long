@@ -1,6 +1,6 @@
 ---
 name: verify-phase
-description: Verify Đảo Đèn Lồng Phase 1 changes against the headless contract and browser gameplay, and refresh the corresponding evidence.
+description: Verify Đảo Đèn Lồng v1.1 regression, three-night gameplay, CLI performance and browser evidence.
 ---
 
-Run npm run verify:all at the project root. Re-run the affected CLI scenarios in tests/scenarios with seed 42 and save the actual JSONL in docs/proof. Compare complete output bytes across repeated runs for changes to the simulation. For visual changes, run the preview and tests/browser-proof.mjs as described in docs/proof/phase-1.md. Record observed results and any pending checks in docs/TIEN-DO.md.
+Run npm run verify:all after simulation changes. Use the scenario fixtures for v1.1 and compare repeated seeded output byte-for-byte. Verify that the Night 3 benchmark reaches tick 21600 within 30 seconds. For client changes follow docs/proof/phase-2.md, run the browser check at 1280×720 and record measured FPS and settings persistence. Keep Phase 1 evidence separate. Update docs/TIEN-DO.md at each milestone.

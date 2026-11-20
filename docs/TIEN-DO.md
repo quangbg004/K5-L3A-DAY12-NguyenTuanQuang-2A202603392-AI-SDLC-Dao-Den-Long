@@ -9,3 +9,9 @@
 | Bản 3D | Đã dựng Đảo Bến, Mây, đèn lồng, biển mây, âm thanh, HUD và nút chơi lại. Đang chạy build và kiểm tra trình duyệt. |
 | Kiểm chứng trên Edge | Hoàn tất ván mặc định trong 1.957 tick, đạt 1.189 điểm. Đã kiểm tra thua và chơi lại từ cả hai màn kết quả. [Ảnh và JSONL](proof/phase-1.md). |
 | Cài sạch và bàn giao | npm ci thành công, npm audit báo 0 lỗ hổng. Build production và 13/13 test đạt trên Windows. Skill verify-phase hợp lệ. [Log kiểm chứng](proof/verify.log). Mốc bàn giao cục bộ dùng tag phase-1. |
+
+## Phase 2 · Ba hòn đảo
+
+| Mốc | Kết quả |
+|---|---|
+| Phạm vi | Đã đọc Ticket-02 và kế hoạch; chuẩn hóa tuning v1.1 và giữ riêng bằng chứng Phase 1. |
