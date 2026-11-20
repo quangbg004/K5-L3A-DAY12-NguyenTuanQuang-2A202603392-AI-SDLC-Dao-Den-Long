@@ -1,0 +1,17 @@
+{
+  "random_motes": false,
+  "random_shades": false,
+  "player": {
+    "carried": 2
+  },
+  "shades": [
+    {
+      "id": "ink",
+      "pos": [
+        6,
+        0,
+        0
+      ]
+    }
+  ]
+}
