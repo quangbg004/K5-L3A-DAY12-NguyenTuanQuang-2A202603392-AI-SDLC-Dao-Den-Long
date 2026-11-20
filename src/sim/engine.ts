@@ -2,6 +2,7 @@ import {idle} from './types.js'
 import type {Controls,DrifterState,Entity,GameEvent,Lantern,Night,Player,Pos,Scenario,ShadeState,Tuning} from './types.js'
 import {maps,distance,direction,ground,slide} from './maps.js'
 import {mulberry32} from './rng.js'
+const order=new Intl.Collator('en',{numeric:true})
 const round=(v:number)=>Math.round(v*1000)/1000||0
 const coords=(p:Pos)=>p.map(round)
 const clone=(p:Pos):Pos=>[...p]
@@ -222,7 +223,7 @@ export class Game{
     for(const s of this.shades)this.protect(s)
     if(!this.fallWait&&edge('pulse'))this.pulse()
     this.enemies()
-    const compare=(a:Entity,b:Entity)=>a.id.localeCompare(b.id,'en',{numeric:true})
+    const compare=(a:Entity,b:Entity)=>order.compare(a.id,b.id)
     this.shades.sort(compare);this.drifters.sort(compare)
     if(!this.fallWait)this.contacts()
     this.spawn()

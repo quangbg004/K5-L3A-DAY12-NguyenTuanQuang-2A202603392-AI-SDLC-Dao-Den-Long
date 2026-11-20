@@ -1,14 +1,15 @@
 {
   "random_motes": false,
   "random_shades": false,
+  "random_drifters": false,
   "player": {
-    "carried": 2
+    "carried": 9
   },
   "lanterns": [
     {
       "id": "L1",
       "pos": [
-        3,
+        2,
         0,
         0
       ]
@@ -16,7 +17,7 @@
   ],
   "motes": [
     [
-      2,
+      1.2,
       0,
       0
     ]

@@ -1,0 +1,14 @@
+{
+  "random_motes": false,
+  "random_shades": false,
+  "random_drifters": false,
+  "player": {
+    "pos": [
+      41,
+      -9.99,
+      0
+    ],
+    "carried": 8,
+    "invuln_ticks": 100
+  }
+}

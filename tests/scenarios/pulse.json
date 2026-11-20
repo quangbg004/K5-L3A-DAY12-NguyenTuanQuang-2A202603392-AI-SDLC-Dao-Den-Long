@@ -1,15 +1,24 @@
 {
   "random_motes": false,
   "random_shades": false,
+  "random_drifters": false,
   "player": {
-    "carried": 2
+    "carried": 6
   },
   "shades": [
     {
       "id": "ink",
       "pos": [
-        6,
+        5,
+        0.8,
+        0
+      ]
+    },
+    {
+      "id": "high",
+      "pos": [
         0,
+        7,
         0
       ]
     }
