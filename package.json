@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "vite preview",
+    "start": "node dist-sim/launcher.js",
     "build": "tsc --noEmit && tsc -p tsconfig.sim.json && vite build",
     "headless": "node dist-sim/headless.js",
     "test": "vitest run",
-    "verify:all": "npm run build && npm test"
+    "verify:all": "npm run build && npm test",
+    "bench": "node dist-sim/bench.js",
+    "soak": "node dist-sim/soak.js"
   },
   "dependencies": {
     "three": "0.170.0"
