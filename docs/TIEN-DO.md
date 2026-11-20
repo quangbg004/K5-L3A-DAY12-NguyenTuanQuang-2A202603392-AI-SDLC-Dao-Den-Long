@@ -20,3 +20,14 @@
 | Bản chơi 3D | Đã build giao diện ba đảo, chuỗi Đêm, tạm dừng, âm lượng/độ nhạy, âm thanh, vật liệu và HUD. Bước tiếp theo là kiểm chứng bằng trình duyệt. |
 | Nghiệm thu | Build và 26/26 test đạt. Hai lượt chạy đủ 21.600 tick trong 1,60 s và 1,88 s, SHA-256 giống nhau. Edge 1280×720 đạt khoảng 48 FPS ở cả ba đảo. |
 | Bàn giao | Đã lưu input tái lập ba Đêm mặc định (thắng đủ 18 đèn, tổng 4.748 điểm), ảnh HUD, pause, cài đặt, Bình Minh và [hồ sơ nghiệm thu](proof/phase-2.md). Mốc bàn giao cục bộ dùng tag phase-2. |
+
+## Phase 3 · Đèn cạn dầu
+
+| Mốc | Kết quả |
+|---|---|
+| Phạm vi | Đã đối chiếu Ticket-03 với Phase 2, cập nhật contract v1.2, ADR và changelog. |
+| Lõi v1.2 | Đã tích hợp dầu nguyên, châm dầu, thắp lại, drain, túi mở rộng và tính kết quả ở bình minh. |
+| Hồi quy | Đã cập nhật kỳ vọng bị thay thế và bổ sung test cho mốc cạn dầu, drain, thắp lại, sức chứa và bình minh. |
+| Bản 3D | Đã tích hợp thanh dầu, nhấp nháy 1 Hz, vết rách, luồng hút dầu, HUD động và bảng màu lưu bền vững. |
+| Nghiệm thu | Build và 34/34 test đạt. Edge đo khoảng 48 FPS ở 1280×720 trên ba đảo, kiểm tra bảng màu sau reload, nhấp nháy và bình minh. CLI hoàn tất 18.000 tick trong 1,13 giây và 0,87 giây, SHA-256 trùng. |
+| Bàn giao | Đã lưu [ảnh, replay, log và số đo](proof/phase-3.md). Mốc bàn giao cục bộ dùng tag phase-3. |

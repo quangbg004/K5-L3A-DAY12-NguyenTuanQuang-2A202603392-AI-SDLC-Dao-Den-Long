@@ -65,6 +65,9 @@ export function scene(host:HTMLElement){
   const meterBack=new T.MeshBasicMaterial({color:0x243047})
   const meterFill=new T.MeshBasicMaterial({color:c.gold})
   const alternateEyes=new T.MeshBasicMaterial({color:0x00b3ff})
+  const shadeEdges=new T.EdgesGeometry(ball)
+  const normalRim=new T.LineBasicMaterial({color:c.rim,transparent:true,opacity:.5})
+  const alternateRim=new T.LineBasicMaterial({color:0x00b3ff,transparent:true,opacity:.5})
   const normalEyes=new T.MeshBasicMaterial({color:c.rim})
   const dimMat=new T.MeshStandardMaterial({color:c.lit,emissive:c.core,emissiveIntensity:.23})
   const streams=new T.LineSegments(new T.BufferGeometry(),new T.LineBasicMaterial({color:0x9f6cf5}))
@@ -123,7 +126,9 @@ export function scene(host:HTMLElement){
           obj.add(new T.Mesh(glow,moteMat))
           for(const side of [-1,1])ellipsoid(obj,c.halo,side*.19,.11,0,.17,.1,.07)
         }else{
-          ellipsoid(obj,c.shade,0,.2,0,.72,.9,.64)
+          const body=ellipsoid(obj,c.shade,0,.2,0,.72,.9,.64)
+          const rim=new T.LineSegments(shadeEdges,normalRim)
+          rim.scale.setScalar(1.01);body.add(rim)
           for(const side of [-1,1])ellipsoid(obj,c.rim,side*.23,.3,.52,.095,.13,.08)
         }
       }
@@ -133,6 +138,8 @@ export function scene(host:HTMLElement){
         obj.rotation.z=e.state==='stunned'?.9:0
         for(const eye of obj.children.slice(1) as T.Mesh[])eye.material=colorblind?alternateEyes:normalEyes
         const body=obj.children[0] as T.Mesh
+        const rim=body.children[0] as T.LineSegments
+        rim.material=colorblind?alternateRim:normalRim
         body.material=e.state==='stunned'?stunnedMat:palette.get(c.shade)!
       }
     })

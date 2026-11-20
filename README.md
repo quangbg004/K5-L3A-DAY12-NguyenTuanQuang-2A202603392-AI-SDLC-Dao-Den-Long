@@ -1,6 +1,6 @@
 # Đảo Đèn Lồng · Ba hòn đảo
 
-Dẫn Mây qua Đảo Bến, Đảo Cau và Đảo Chuông để thắp lần lượt 5, 6 và 7 đèn trước bình minh. Bắt đầu hành trình từ menu hoặc chọn một Đêm để chơi riêng. Giữa hai Đêm, Mây hồi đầy 3 Ngọn Lửa. Tổng điểm Bình Minh cộng các Đêm đã thắng trong hành trình.
+Dẫn Mây qua Đảo Bến, Đảo Cau và Đảo Chuông để giữ ít nhất 3/5, 4/6 và 5/7 đèn sáng tới bình minh. Bắt đầu hành trình từ menu hoặc chọn một Đêm để chơi riêng. Giữa hai Đêm, Mây hồi đầy 3 Ngọn Lửa. Tổng điểm Bình Minh cộng các Đêm đã thắng trong hành trình.
 
 ## Cài và chơi
 
@@ -17,15 +17,17 @@ npm start
 | WASD, Space | Di chuyển và nhảy |
 | ←/→ hoặc chuột sau khi nhấp vào cảnh | Xoay camera |
 | Shift | Lướt trong 0,2 giây; Bùa Gió cho phép lướt liên tiếp bằng các lần bấm riêng |
-| E | Nạp tối đa lượng còn thiếu vào đèn gần nhất trong 2 m. Túi chứa 10 đốm, mỗi đèn cần 10 |
+| E | Thắp mới bằng 10 đốm, thắp lại bằng 5 hoặc châm dầu cho đèn sáng. Chọn đèn nhận được gần nhất trong 2 m |
 | Q hoặc chuột phải | Tiêu 3 đốm để tỏa sáng, đẩy lùi Bóng Mực hoặc buộc Gió Lạc thả đồ |
 | P hoặc Esc | Tạm dừng, tiếp tục, chỉnh âm lượng/độ nhạy, chơi lại Đêm hoặc về menu |
 
-Mỗi đốm **nạp vào đèn** cộng 10 điểm, thắp đèn cộng 100, mỗi Bóng Mực trúng xung cộng 5. Thắng Đêm thưởng 2 điểm cho mỗi giây nguyên còn lại và 50 điểm cho mỗi Ngọn Lửa. Đèn sáng bảo vệ trong bán kính 6 m. Rơi khỏi đảo mất 1 lửa và toàn bộ đom đóm đang mang.
+Mỗi đom đóm nạp hoặc châm dầu cộng 5 điểm. Thắp mới cộng 100, thắp lại cộng 40. Tỏa sáng cộng 5 mỗi Bóng Mực trúng xung, hoặc 15 nếu con đó đang hút dầu. Khi thắng, mỗi đèn còn sáng cộng 50 điểm và phần nguyên của lượng dầu, mỗi Ngọn Lửa cộng 50.
+
+Đèn đầy có 100 dầu và hao 1 dầu mỗi giây. Mỗi đom đóm châm thêm 10 dầu. Khi dưới 30 dầu, đèn nhấp nháy, mất vùng an toàn và có thể bị Bóng Mực hút dầu. Mỗi lần thắp tăng túi thêm 2 ô, tối đa 20. Rơi khỏi đảo mất một lửa và toàn bộ đom đóm đang mang. Trong Cài đặt, bật **Bảng màu dễ phân biệt** để đổi mắt Bóng Mực sang xanh lam và thêm biểu tượng ⚠ vào cảnh báo.
 
 ## Kiểm chứng
 
-Chạy `npm run verify:all` để build và kiểm tra CLI v1.1. CLI chấp nhận `--night 1`, `2` hoặc `3`. Ví dụ chạy kịch bản Gió Lạc trên cầu tre:
+Chạy `npm run verify:all` để build và kiểm tra CLI v1.2. CLI chấp nhận `--night 1`, `2` hoặc `3`. Ví dụ chạy kịch bản Gió Lạc trên cầu tre:
 
 ```sh
 node dist-sim/headless.js --seed 42 --night 2 --scenario tests/scenarios/night2-drifter-charm.json --inputs tests/scenarios/night2-drifter-charm-inputs.json --ticks 124 --out replay.jsonl
@@ -33,7 +35,7 @@ node dist-sim/headless.js --seed 42 --night 2 --scenario tests/scenarios/night2-
 
 ## Sáng tạo của tôi
 
-Mây đội nón lá có đèn nhỏ đung đưa. Mỗi đèn vừa thắp thả một đèn trời lên biển mây và làm sương thưa dần. Âm nhạc và chuông ngũ cung được tổng hợp trên trình duyệt. [Kết quả, ảnh và số đo Phase 2](docs/proof/phase-2.md) · [Tiến độ từng mốc](docs/TIEN-DO.md) · [Giả định](docs/notes/phase-2-assumptions.md) · [Nhật ký AI](docs/notes/ai-log.md)
+Mây đội nón lá có đèn nhỏ đung đưa. Mỗi đèn vừa thắp thả một đèn trời lên biển mây và làm sương thưa dần. Âm nhạc và chuông ngũ cung được tổng hợp trên trình duyệt. [Bằng chứng Phase 3](docs/proof/phase-3.md) · [Changelog](CHANGELOG.md) · [Tiến độ từng mốc](docs/TIEN-DO.md) · [Giả định](docs/notes/phase-2-assumptions.md) · [Nhật ký AI](docs/notes/ai-log.md)
 
 > **Cá nhân** (1 người / 1 MSSV) · Áp dụng SDLC cùng AI để xây một **game 3D** qua **4 phase**, từ yêu cầu ban đầu tới bản phát hành.
 > **Lab board + trợ giảng:** **[Đảo Đèn Lồng Lab](https://claude.ai/artifact/Q1RYyv1dxjUczzCbd2ZnoW)**

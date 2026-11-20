@@ -1,0 +1,27 @@
+{
+  "snapshot_every": 60,
+  "seed": 42,
+  "trials": [
+    {
+      "sha256": "f2d406d898b91e6daf89fcac8ed43365ef52b3b2288af60cc89032534bd1c58e",
+      "end": {
+        "type": "end",
+        "ticks": 18000,
+        "state": "lost",
+        "score": 0
+      },
+      "seconds": 1.128322
+    },
+    {
+      "sha256": "f2d406d898b91e6daf89fcac8ed43365ef52b3b2288af60cc89032534bd1c58e",
+      "end": {
+        "type": "end",
+        "ticks": 18000,
+        "state": "lost",
+        "score": 0
+      },
+      "seconds": 0.867739
+    }
+  ],
+  "night": 3
+}
